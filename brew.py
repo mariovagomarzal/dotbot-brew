@@ -2,7 +2,7 @@
 import os
 import subprocess
 from pathlib import Path
-from typing import Any
+from typing import Any, Callable
 
 from dotbot import Plugin
 
@@ -21,10 +21,10 @@ class Brew(Plugin):
     # A dictionary of the directives, where each item contains a tuple with
     # the callable that handles the directive and a dict with its specific
     # default options.
-    _directives: dict[str, tuple[str, dict[str, Any]]] = {
+    _directives: dict[str, tuple[Callable, dict[str, Any]]] = {
         # The `install-brew` directive
         "install-brew": (
-            self._install_brew,
+            Brew._install_brew,
             {},
         ),
     }
