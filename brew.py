@@ -36,7 +36,7 @@ class Brew(Plugin):
     def _get_directive_options(
         self,
         directive: str,
-        data: Any
+        data: Any,
     ) -> dict[str, Any]:
         """Returns the default options for the directive"""
         options = self._global_defaults.copy()
@@ -122,8 +122,8 @@ class Brew(Plugin):
                 # Install Homebrew
                 return self._invoke_shell_commands(
                     [
-                        "arch -x86_64" if options["force-intel"] else ""
-                        "/bin/bash -c"
+                        "arch -x86_64 " if options["force-intel"] else ""
+                        "/bin/bash -c "
                         "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)",
                     ],
                     options,

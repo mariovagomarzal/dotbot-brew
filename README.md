@@ -84,6 +84,10 @@ it is not already installed. The contents of this directive can be either a
 bool indicating if Homebrew should be installed or a dictionary with the
 general options, in which case the installation will be performed.
 
+### The `brew` directive
+
+Hi.
+
 ## Examples
 
 ## License
