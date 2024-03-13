@@ -1,6 +1,5 @@
 # dotbot-brew
 
-
 This is a [Dotbot][dotbot] plugin for installing packages and casks with
 Homebrew.
 
