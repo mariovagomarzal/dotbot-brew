@@ -198,6 +198,34 @@ ways:
       # ... other general options
   ```
 
+### The `brewfile` directive
+
+The `brewfile` directive is used to install packages and casks from a
+Brewfile. It can be used in two ways:
+
+- With a list of Brewfiles to install. For example:
+
+  ```yaml
+  - brewfile:
+    - Brewfile
+    - Brewfile.local
+  ```
+
+- With a dictionary with the general options and/or the specific options of
+  the directive. The specific options are the following:
+
+  - `brewfiles`: A list of Brewfiles to install.
+
+  For example:
+
+  ```yaml
+  - brewfile:
+      brewfiles: # By default it is an empty list
+        - Brewfile
+        - Brewfile.local
+      # ... other general options
+  ```
+
 ## Examples
 
 ## License

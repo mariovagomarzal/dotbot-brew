@@ -53,6 +53,12 @@ class Brew(Plugin):
                     "taps": [],
                 }
             ),
+            "brewfile": (
+                self._brewfile,
+                {
+                    "brewfiles": [],
+                }
+            ),
         }
 
         super().__init__(*args, **kwargs)
@@ -371,5 +377,51 @@ class Brew(Plugin):
             self._log.info("All taps were successful")
         else:
             self._log.error("Some taps failed")
+
+        return all_success
+
+    def _brewfile(
+        self,
+        data: Any,
+        options: dict[str, Any],
+    ) -> bool:
+        """Installs Homebrew packages and casks from a Brewfile"""
+        # Check validity of the data type
+        brewfiles = []
+        if isinstance(data, dict):
+            brewfiles = options["brewfiles"]
+        elif isinstance(data, list):
+            brewfiles = data
+        else:
+            self._log.error("Invalid data for the `brewfile` directive")
+            return False
+
+        # Check validity of the brewfiles type
+        if not isinstance(brewfiles, list):
+            self._log.error("Invalid brewfiles for the `brewfile` directive")
+            return False
+
+        # Install the packages and casks
+        all_success = True
+        for brewfile in brewfiles:
+            self._log.info(f"Installing packages and casks from {brewfile}")
+            success = self._invoke_shell_commands(
+                [
+                    self._brew_prefix(options["force-intel"]) +
+                    f" bundle --verbose --file={brewfile}",
+                ],
+                options,
+            ) == 0
+            all_success = all_success and success
+
+            if success:
+                self._log.info(f"Installed packages and casks from {brewfile}")
+            else:
+                self._log.error(f"Error installing packages and casks from {brewfile}")
+
+        if all_success:
+            self._log.info("All Brewfiles were successful")
+        else:
+            self._log.error("Some Brewfiles failed")
 
         return all_success
