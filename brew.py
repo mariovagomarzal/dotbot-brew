@@ -130,9 +130,9 @@ class Brew(Plugin):
         """Installs Homebrew"""
         # Check validity of the data type
         install = True
-        if istance(data, dict):
+        if isinstance(data, dict):
             install = options["install"]
-        elif istance(data, bool):
+        elif isinstance(data, bool):
             install = data
         else:
             self._log.error("Invalid data for the `install-brew` directive")
