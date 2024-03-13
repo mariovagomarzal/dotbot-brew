@@ -33,10 +33,18 @@ class Brew(Plugin):
                     "force": False,
                 },
             ),
+            "brew": (
+                self._brew,
+                {
+                    "packages": [],
+                    "force": False,
+                }
+            )
         }
 
         super().__init__(*args, **kwargs)
 
+    # Directive management methods
     def can_handle(self, directive: str) -> bool:
         """Returns wether the directive can be handled by this plugin"""
         return directive in self._directives.keys()
@@ -80,6 +88,7 @@ class Brew(Plugin):
         # type and the options.
         return self._directives[directive][0](data, options)
 
+    # Auxiliary methods
     def _invoke_shell_commands(
         self,
         commands: list[str],
@@ -122,6 +131,27 @@ class Brew(Plugin):
         else:
             raise ValueError(f"Unsupported OS: {os_name}")
 
+    def _list_packages(
+        self,
+        package_type: str,
+        force_intel: bool,
+    ) -> list[str]:
+        """Returns a list of the installed formulae"""
+        result = subprocess.run(
+            self._brew_prefix(force_intel) + f" list --{package_type} -1",
+            shell=True,
+            stdin=subprocess.PIPE,
+            capture_output=True,
+        )
+
+        if result.returncode != 0:
+            raise RuntimeError(
+                f"Error listing formulae: {result.stderr.decode()}"
+            )
+        else:
+            return result.stdout.decode().split("\n")
+
+    # Directive methods
     def _install_brew(
         self,
         data: Any,
