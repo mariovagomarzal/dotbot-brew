@@ -47,7 +47,7 @@ They can be defined in three ways:
         stderr: true
         forece-intel: false
   ```
-- As a gloval option for every directive of the specified type. For
+- As a global option for every directive of the specified type. For
   example:
 
   ```yaml
