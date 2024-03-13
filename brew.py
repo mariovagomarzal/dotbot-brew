@@ -129,7 +129,7 @@ class Brew(Plugin):
             if Path(
                 self._brew_prefix(options["force-intel"], for_cmd=False)
             ).exists():
-                self._log.warning("Homebrew is already installed")
+                self._log.info("Homebrew is already installed")
                 return True
             else:
                 # Install Homebrew
