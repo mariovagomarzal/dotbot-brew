@@ -187,3 +187,59 @@ class Brew(Plugin):
         else:
             self.info("Skipping Homebrew installation")
             return True
+
+    def _brew(
+        self,
+        data: Any,
+        options: dict[str, Any],
+    ) -> bool:
+        """Installs Homebrew packages (formulae)"""
+        # Check validity of the data type
+        packages = []
+        if isinstance(data, dict):
+            packages = options["packages"]
+        elif isinstance(data, list):
+            packages = data
+        else:
+            self._log.error("Invalid data for the `brew` directive")
+            return False
+
+        # Check validity of the packages type
+        if not isinstance(packages, list):
+            self._log.error("Invalid packages for the `brew` directive")
+            return False
+
+        # Install the packages
+        all_success = True
+        for package in packages:
+            install_package = True
+            reinstall = False
+            if package in self._list_packages(
+                "formulae", options["force-intel"]
+            ):
+                if options["force"]:
+                    self._log.info(f"Reinstalling {package}")
+                    reinstall = True
+                else:
+                    self._log.info(f"{package} is already installed")
+                    install_package = False
+            else:
+                self._log.info(f"Installing {package}")
+
+            if install_package:
+                success = self._invoke_shell_commands(
+                    [
+                        self._brew_prefix(options["force-intel"]) +
+                        " " + ("reinstall" if reinstall else "install") +
+                        f" {package}",
+                    ],
+                    options,
+                ) == 0
+                all_success = all_success and success
+
+                if success:
+                    self._log.info(f"{package} installed")
+                else:
+                    self._log.error(f"Error installing {package}")
+
+        return all_success

@@ -105,6 +105,37 @@ it is not already installed. It can be used in two ways:
       # ... other general options
   ```
 
+### The `brew` directive
+
+The `brew` directive is used to install a package (formula) with Homebrew.
+It can be used in two ways:
+
+- With a list of packages to install. For example:
+
+  ```yaml
+  - brew:
+    - git
+    - zsh
+  ```
+
+- With a dictionary with the general options and/or the specific options of
+  the directive. The specific options are the following:
+
+  - `packages`: A list of packages to install.
+  - `force`: A boolean that indicates if the package should be installed
+    even if it is already installed.
+
+  For example:
+
+  ```yaml
+  - brew:
+      packages: # By default it is an empty list
+        - git
+        - zsh
+      force: false # Same as the global directive defaults
+      # ... other general options
+  ```
+
 ## Examples
 
 ## License
