@@ -76,6 +76,9 @@ The order of preference of the options is ascending, meaning that the local
 options are prioritized over the globals of the directive, and the globals
 of the directive over the globals of the plugin.
 
+The specific options of each directive will be described in the following
+subsections.
+
 ### The `install-brew` directive 
 
 The `install-brew` directive is used to install Homebrew in your machine if
@@ -132,6 +135,37 @@ It can be used in two ways:
       packages: # By default it is an empty list
         - git
         - zsh
+      force: false # Same as the global directive defaults
+      # ... other general options
+  ```
+
+### The `cask` directive
+
+The `cask` directive is used to install a cask with Homebrew.
+It can be used in two ways:
+
+- With a list of casks to install. For example:
+
+  ```yaml
+  - cask:
+    - firefox
+    - visual-studio-code
+  ```
+
+- With a dictionary with the general options and/or the specific options of
+  the directive. The specific options are the following:
+
+  - `casks`: A list of casks to install.
+  - `force`: A boolean that indicates if the cask should be installed
+    even if it is already installed.
+
+  For example:
+
+  ```yaml
+  - cask:
+      casks: # By default it is an empty list
+        - firefox
+        - visual-studio-code
       force: false # Same as the global directive defaults
       # ... other general options
   ```

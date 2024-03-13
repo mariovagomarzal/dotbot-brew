@@ -39,7 +39,14 @@ class Brew(Plugin):
                     "packages": [],
                     "force": False,
                 }
-            )
+            ),
+            "cask": (
+                self._cask,
+                {
+                    "casks": [],
+                    "force": False,
+                }
+            ),
         }
 
         super().__init__(*args, **kwargs)
@@ -251,5 +258,65 @@ class Brew(Plugin):
             self._log.info("All packages installed successfully")
         else:
             self._log.error("Some packages failed to install")
+
+        return all_success
+
+    def _cask(
+        self,
+        data: Any,
+        options: dict[str, Any],
+    ) -> bool:
+        # Check validity of the data type
+        casks = []
+        if isinstance(data, dict):
+            casks = options["casks"]
+        elif isinstance(data, list):
+            casks = data
+        else:
+            self._log.error("Invalid data for the `cask` directive")
+            return False
+
+        # Check validity of the casks type
+        if not isinstance(casks, list):
+            self._log.error("Invalid casks for the `cask` directive")
+            return False
+
+        # Install the casks
+        all_success = True
+        for cask in casks:
+            install_cask = True
+            reinstall = False
+            if cask in self._list_packages(
+                "casks", options["force-intel"]
+            ):
+                if options["force"]:
+                    self._log.info(f"Reinstalling {cask}")
+                    reinstall = True
+                else:
+                    self._log.info(f"{cask} is already installed")
+                    install_cask = False
+            else:
+                self._log.info(f"Installing {cask}")
+
+            if isntall_cask:
+                success = self._invoke_shell_commands(
+                    [
+                        self._brew_prefix(options["force-intel"]) +
+                        " " + ("reinstall" if reinstall else "install") +
+                        f" --cask {cask}",
+                    ],
+                    options,
+                ) == 0
+                all_success = all_success and success
+
+                if success:
+                    self._log.info(f"{cask} installed")
+                else:
+                    self._log.error(f"Error installing {cask}")
+
+        if all_success:
+            self._log.info("All casks installed successfully")
+        else:
+            self._log.error("Some casks failed to install")
 
         return all_success
