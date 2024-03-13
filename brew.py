@@ -9,24 +9,30 @@ from dotbot import Plugin
 
 class Brew(Plugin):
     """Brew plugin, a subclass of the base Plugin class"""
-    # The global defaults of all the directives
-    _global_defaults: dict[str, Any] = {
-        "stdin": True,
-        "stdout": True,
-        "stderr": True,
-        "force-intel": False,
-    }
+    _global_defaults: dict[str, Any]
+    _directives: dict[str, tuple[Callable, dict[str, Any]]]
 
-    # A dictionary of the directives, where each item contains a tuple with
-    # the callable that handles the directive and a dict with its specific
-    # default options.
-    _directives: dict[str, tuple[Callable, dict[str, Any]]] = {
-        # The `install-brew` directive
-        "install-brew": (
-            Brew._install_brew,
-            {},
-        ),
-    }
+    def __init__(self, *args, **kwargs):
+        # The global defaults of all the directives
+        self._global_defaults = {
+            "stdin": True,
+            "stdout": True,
+            "stderr": True,
+            "force-intel": False,
+        }
+
+        # A dictionary of the directives, where each item contains a tuple with
+        # the callable that handles the directive and a dict with its specific
+        # default options.
+        self._directives = {
+            # The `install-brew` directive
+            "install-brew": (
+                self._install_brew,
+                {},
+            ),
+        }
+
+        super().__init__(*args, **kwargs)
 
     def can_handle(self, directive: str) -> bool:
         """Returns wether the directive can be handled by this plugin"""
