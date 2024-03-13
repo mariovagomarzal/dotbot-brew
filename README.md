@@ -141,8 +141,8 @@ It can be used in two ways:
 
 ### The `cask` directive
 
-The `cask` directive is used to install a cask with Homebrew.
-It can be used in two ways:
+The `cask` directive is used to install a cask with Homebrew. It can be
+used in two ways:
 
 - With a list of casks to install. For example:
 
@@ -167,6 +167,34 @@ It can be used in two ways:
         - firefox
         - visual-studio-code
       force: false # Same as the global directive defaults
+      # ... other general options
+  ```
+
+### The `tap` directive
+
+The `tap` directive is used to add a tap to Homebrew. It can be used in two
+ways:
+
+- With a list of taps to add. For example:
+
+  ```yaml
+  - tap:
+    - homebrew/cask-fonts
+    - homebrew/cask-drivers
+  ```
+
+- With a dictionary with the general options and/or the specific options of
+  the directive. The specific options are the following:
+
+  - `taps`: A list of taps to add.
+
+  For example:
+
+  ```yaml
+  - tap:
+      taps: # By default it is an empty list
+        - homebrew/cask-fonts
+        - homebrew/cask-drivers
       # ... other general options
   ```
 

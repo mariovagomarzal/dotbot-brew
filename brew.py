@@ -47,6 +47,12 @@ class Brew(Plugin):
                     "force": False,
                 }
             ),
+            "tap": (
+                self._tap,
+                {
+                    "taps": [],
+                }
+            ),
         }
 
         super().__init__(*args, **kwargs)
@@ -266,6 +272,7 @@ class Brew(Plugin):
         data: Any,
         options: dict[str, Any],
     ) -> bool:
+        """Installs Homebrew casks"""
         # Check validity of the data type
         casks = []
         if isinstance(data, dict):
@@ -318,5 +325,51 @@ class Brew(Plugin):
             self._log.info("All casks installed successfully")
         else:
             self._log.error("Some casks failed to install")
+
+        return all_success
+
+    def _tap(
+        self,
+        data: Any,
+        options: dict[str, Any],
+    ) -> bool:
+        """Taps a Homebrew repository"""
+        # Check validity of the data type
+        taps = []
+        if isinstance(data, dict):
+            taps = options["taps"]
+        elif isinstance(data, list):
+            taps = data
+        else:
+            self._log.error("Invalid data for the `tap` directive")
+            return False
+
+        # Check validity of the taps type
+        if not isinstance(taps, list):
+            self._log.error("Invalid taps for the `tap` directive")
+            return False
+
+        # Tap the repositories
+        all_success = True
+        for tap in taps:
+            self._log.info(f"Tapping {tap}")
+            success = self._invoke_shell_commands(
+                [
+                    self._brew_prefix(options["force-intel"]) +
+                    f" tap {tap}",
+                ],
+                options,
+            ) == 0
+            all_success = all_success and success
+
+            if success:
+                self._log.info(f"{tap} tapped")
+            else:
+                self._log.error(f"Error tapping {tap}")
+
+        if all_success:
+            self._log.info("All taps were successful")
+        else:
+            self._log.error("Some taps failed")
 
         return all_success
