@@ -141,5 +141,9 @@ class Brew(Plugin):
                     ],
                     options,
                 ) == 0
-        else:
+        elif instance(data, bool) and not data:
+            self.info("Skipping Homebrew installation")
             return True
+        else:
+            self._log.error("Invalid data for the `install-brew` directive")
+            return False
