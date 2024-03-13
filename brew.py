@@ -176,14 +176,19 @@ class Brew(Plugin):
                 return True
             else:
                 self._log.info("Installing Homebrew")
-                return self._invoke_shell_commands(
+                if self._invoke_shell_commands(
                     [
                         "arch -x86_64 " if options["force-intel"] else ""
                         "/bin/bash -c "
                         "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)",
                     ],
                     options,
-                ) == 0
+                ) == 0:
+                    self._log.info("Homebrew installed")
+                    return True
+                else:
+                    self._log.error("Error installing Homebrew")
+                    return False
         else:
             self.info("Skipping Homebrew installation")
             return True
@@ -241,5 +246,10 @@ class Brew(Plugin):
                     self._log.info(f"{package} installed")
                 else:
                     self._log.error(f"Error installing {package}")
+
+        if all_success:
+            self._log.info("All packages installed successfully")
+        else:
+            self._log.error("Some packages failed to install")
 
         return all_success
