@@ -9,7 +9,6 @@ from dotbot import Plugin
 
 class Brew(Plugin):
     """Brew plugin, a subclass of the base Plugin class"""
-
     # The global defaults of all the directives
     _global_defaults: dict[str, Any] = {
         "stdin": True,
@@ -73,6 +72,7 @@ class Brew(Plugin):
         return self._directives[directive][0](data, options)
 
     def _invoke_shell_commands(
+        self,
         commands: list[str],
         options: dict[str, Any],
     ) -> int:
@@ -87,19 +87,23 @@ class Brew(Plugin):
             stderr=subprocess.PIPE if not options["stderr"] else None,
         )
 
-    def _brew_prefix(self, for_cmd: bool = True) -> str:
+    def _brew_prefix(
+        self,
+        force_intel: bool,
+        for_cmd: bool = True
+    ) -> str:
         """Returns the Homebrew prefix based on the OS and the
         architecture"""
         os_name = os.uname().sysname
         os_arch = os.uname().machine
 
         if os_name == "Darwin":
-            if os_arch == "arm64" and options["force-intel"]:
+            if os_arch == "arm64" and force_intel:
                 if for_cmd:
                     return "arch -x86_64 /usr/local/bin/brew"
                 else:
                     return "/usr/local/bin/brew"
-            elif os_arch == "arm64" and not options["force-intel"]:
+            elif os_arch == "arm64" and not force_intel:
                 return "/opt/homebrew/bin/brew"
             else:
                 return "/usr/local/bin/brew"
@@ -109,13 +113,16 @@ class Brew(Plugin):
             raise ValueError(f"Unsupported OS: {os_name}")
 
     def _install_brew(
+        self,
         data: Any,
         options: dict[str, Any],
     ) -> bool:
         """Installs Homebrew"""
-        if isinstance(data, dict) or (isinstace(data, bool) and data):
+        if isinstance(data, dict) or (isinstance(data, bool) and data):
             # Check if Homebrew is already installed
-            if Path(self._brew_prefix(for_cmd=False)).exists():
+            if Path(
+                self._brew_prefix(options["force-intel"], for_cmd=False)
+            ).exists():
                 self._log.debug("Homebrew is already installed")
                 return True
             else:
