@@ -79,13 +79,31 @@ of the directive over the globals of the plugin.
 ### The `install-brew` directive 
 
 The `install-brew` directive is used to install Homebrew in your machine if
-it is not already installed. The contents of this directive can be either a
-bool indicating if Homebrew should be installed or a dictionary with the
-general options, in which case the installation will be performed.
+it is not already installed. It can be used in two ways:
 
-### The `brew` directive
+- With a boolean that indicates if Homebrew should be installed. For
+  example:
 
-Hi.
+  ```yaml
+  - install-brew: true
+  ```
+
+- With a dictionary with the general options and/or the specific options of
+  the directive. The specific options are the following:
+
+  - `install`: A boolean that indicates if Homebrew should be installed.
+  - `force`: A boolean that indicates if Homebrew should be installed even
+    if it is already installed.
+
+  For example:
+
+  ```yaml
+  - install-brew:
+      # Same as the global directive defaults
+      install: true
+      force: false
+      # ... other general options
+  ```
 
 ## Examples
 

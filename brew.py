@@ -28,7 +28,10 @@ class Brew(Plugin):
             # The `install-brew` directive
             "install-brew": (
                 self._install_brew,
-                {},
+                {
+                    "install": True,
+                    "force": False,
+                },
             ),
         }
 
@@ -125,15 +128,24 @@ class Brew(Plugin):
         options: dict[str, Any],
     ) -> bool:
         """Installs Homebrew"""
-        if isinstance(data, dict) or (isinstance(data, bool) and data):
-            # Check if Homebrew is already installed
+        # Check validity of the data type
+        install = True
+        if istance(data, dict):
+            install = options["install"]
+        elif istance(data, bool):
+            install = data
+        else:
+            self._log.error("Invalid data for the `install-brew` directive")
+            return False
+
+        if install:
             if Path(
                 self._brew_prefix(options["force-intel"], for_cmd=False)
-            ).exists():
+            ).exists() and not options["force"]:
                 self._log.info("Homebrew is already installed")
                 return True
             else:
-                # Install Homebrew
+                self._log.info("Installing Homebrew")
                 return self._invoke_shell_commands(
                     [
                         "arch -x86_64 " if options["force-intel"] else ""
@@ -142,9 +154,6 @@ class Brew(Plugin):
                     ],
                     options,
                 ) == 0
-        elif instance(data, bool) and not data:
+        else:
             self.info("Skipping Homebrew installation")
             return True
-        else:
-            self._log.error("Invalid data for the `install-brew` directive")
-            return False
