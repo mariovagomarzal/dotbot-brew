@@ -82,7 +82,8 @@ class Brew(Plugin):
         commands: list[str],
         options: dict[str, Any],
     ) -> int:
-        """"""
+        """Invokes a list of shell commands with the given options and
+        returns the exit code of the last command executed."""
         commands_str = " && ".join(commands)
         return subprocess.call(
             commands_str,
