@@ -311,7 +311,7 @@ class Brew(Plugin):
             else:
                 self._log.info(f"Installing {cask}")
 
-            if isntall_cask:
+            if install_cask:
                 success = self._invoke_shell_commands(
                     [
                         self._brew_prefix(options["force-intel"]) +
