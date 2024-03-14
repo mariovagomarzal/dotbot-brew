@@ -3,7 +3,36 @@
 This is a [Dotbot][dotbot] plugin for installing packages and casks with
 Homebrew.
 
+## Table of contents
+
+- [Installation](#installation)
+- [Usage](#usage)
+  - [The `install-brew` directive](#the-install-brew-directive)
+  - [The `brew` directive](#the-brew-directive)
+  - [The `cask` directive](#the-cask-directive)
+  - [The `tap` directive](#the-tap-directive)
+  - [The `brewfile` directive](#the-brewfile-directive)
+- [Examples](#examples)
+  - [Minimal example](#minimal-example)
+  - [Complete example](#complete-example)
+- [License](#license)
+
 ## Installation
+
+To use this plugin in your dotfiles, you need to add it as a submodule with
+the following command:
+
+```sh
+git submodule add https://github.com/mariovagomarzal/dotbot-brew.git
+```
+
+Then, you need to add the plugin when you call the `dotbot` executable.
+Typically, this is done in the `install` script of your dotfiles. For
+example, in the default `install` script of Dotbot:
+
+```sh
+"${BASEDIR}/${DOTBOT_DIR}/${DOTBOT_BIN}" -d "${BASEDIR}" --plugin-dir dotbot-brew -c "${CONFIG}" "${@}"
+```
 
 ## Usage
 
@@ -227,6 +256,65 @@ Brewfile. It can be used in two ways:
   ```
 
 ## Examples
+
+In this section we will show two examples of how to use the plugin.
+
+### Minimal example
+
+The following example shows how to use the plugin to install Homebrew and
+some packages and casks with no fancy options.
+
+```yaml
+- defaults:
+    homebrew:
+      # Disable standard output for all the `dotbot-brew` directives
+      stdout: false
+
+- tap:
+  - homebrew/cask-fonts
+
+- brew:
+  - git
+  - fish
+
+- cask:
+  - visual-studio-code
+  - font-fira-code-nerd-font
+```
+
+### Complete example
+
+The following example shows how to use the plugin to install Homebrew and
+some packages and casks with some fancy options.
+
+```yaml
+- defaults:
+    homebrew:
+      force-intel: true
+      stdin: false
+    cask:
+      force: true
+
+- tap:
+  - homebrew/cask-fonts
+
+- brew:
+  - git
+  - fish
+
+- cask:
+    stdin: true
+    casks:
+      - mactex
+      - karabiner-elements
+    
+- cask:
+  - visual-studio-code
+
+- brewfile:
+  - brew/Brewfile
+  - brew/Brewfile.local
+```
 
 ## License
 
