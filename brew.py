@@ -197,9 +197,9 @@ class Brew(Plugin):
                 self._log.info("Installing Homebrew")
                 if self._invoke_shell_commands(
                     [
-                        "arch -x86_64 " if options["force-intel"] else ""
+                        ("arch -x86_64 " if options["force-intel"] else "") + \
                         "/bin/bash -c "
-                        "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)",
+                        "\"$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)\"",
                     ],
                     options,
                 ) == 0:
