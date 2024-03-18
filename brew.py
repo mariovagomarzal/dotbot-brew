@@ -214,7 +214,9 @@ class Brew(Plugin):
                     success = False
 
                 # Shell setup
-                brew_path = self._brew_prefix(options["force-intel"], for_cmd=False)
+                brew_path = str(Path(
+                    self._brew_prefix(options["force-intel"], for_cmd=False)
+                ).parent)
 
                 # Bash setup
                 if options["setup-bash"]:
