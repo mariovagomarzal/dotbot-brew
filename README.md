@@ -126,6 +126,12 @@ it is not already installed. It can be used in two ways:
   - `install`: A boolean that indicates if Homebrew should be installed.
   - `force`: A boolean that indicates if Homebrew should be installed even
     if it is already installed.
+  - `setup_bash`: A boolean that indicates if the Homebrew post-isntall
+    steps for Bash should be executed.
+  - `setup_zsh`: A boolean that indicates if the Homebrew post-isntall
+    steps for Zsh should be executed.
+  - `setup_fish`: A boolean that indicates if the Homebrew post-isntall
+    steps for Fish should be executed.
 
   For example:
 
@@ -136,6 +142,10 @@ it is not already installed. It can be used in two ways:
       force: false
       # ... other general options
   ```
+
+**Note:** See the `_install_brew` method in the `brew.py` file for more
+information about the specific commands that are executed for each
+setup-shell option.
 
 ### The `brew` directive
 

@@ -31,6 +31,9 @@ class Brew(Plugin):
                 {
                     "install": True,
                     "force": False,
+                    "setup-bash": False,
+                    "setup-zsh": False,
+                    "setup-fish": False,
                 },
             ),
             "brew": (
@@ -194,6 +197,8 @@ class Brew(Plugin):
                 self._log.info("Homebrew is already installed")
                 return True
             else:
+                success = True
+
                 self._log.info("Installing Homebrew")
                 if self._invoke_shell_commands(
                     [
@@ -204,10 +209,59 @@ class Brew(Plugin):
                     options,
                 ) == 0:
                     self._log.info("Homebrew installed")
-                    return True
                 else:
                     self._log.error("Error installing Homebrew")
-                    return False
+                    success = False
+
+                # Shell setup
+                brew_path = self._brew_prefix(options["force-intel"], for_cmd=False)
+
+                # Bash setup
+                if options["setup-bash"]:
+                    self._log.info("Setting up Homebrew for Bash")
+                    bash_commands = [
+                        f"echo \"export PATH={brew_path}:$PATH\" >> ~/.bash_profile\n",
+                        f"echo \"export PATH={brew_path}:$PATH\" >> ~/.bashrc\n",
+                    ]
+                    if self._invoke_shell_commands(
+                        bash_commands,
+                        options,
+                    ) == 0:
+                        self._log.info("Homebrew setup for Bash")
+                    else:
+                        self._log.error("Error setting up Homebrew for Bash")
+                        success = False
+                
+                # Zsh setup
+                if options["setup-zsh"]:
+                    self._log.info("Setting up Homebrew for Zsh")
+                    zsh_commands = [
+                        f"echo \"export PATH={brew_path}:$PATH\" >> ~/.zshenv\n",
+                        f"echo \"export PATH={brew_path}:$PATH\" >> ~/.zshrc\n",
+                    ]
+                    if self._invoke_shell_commands(
+                        zsh_commands,
+                        options,
+                    ) == 0:
+                        self._log.info("Homebrew setup for Zsh")
+                    else:
+                        self._log.error("Error setting up Homebrew for Zhs")
+                        success = False
+
+                # Fish setup
+                if options["setup-fish"]:
+                    self._log.info("Setting up Homebrew for Fish")
+                    fish_commands = ["set -Ux fish_user_paths " + brew_path]
+                    if self._invoke_shell_commands(
+                        fish_commands,
+                        options,
+                    ) == 0:
+                        self._log.info("Homebrew setup for Fish")
+                    else:
+                        self._log.error("Error setting up Homebrew for Fish")
+                        success = False
+
+                return success
         else:
             self.info("Skipping Homebrew installation")
             return True
